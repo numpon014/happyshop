@@ -19,7 +19,7 @@ RSpec.describe 'Products API' do
       end
 
       it 'returns all category products' do
-        expect(json.size).to eq(20)
+        expect(json['products'].size).to eq(20)
       end
     end
 
@@ -45,11 +45,11 @@ RSpec.describe 'Products API' do
       end
 
       it 'returns category products amount' do
-        expect(json.size).to eq(20)
+        expect(json['products'].size).to eq(20)
       end
 
       it 'returns category products amount' do
-        expect(json[0]['id']).to eq(second_page_first_product_id)
+        expect(json['products'][0]['id']).to eq(second_page_first_product_id)
       end
     end
   end
