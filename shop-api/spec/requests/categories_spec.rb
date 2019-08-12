@@ -1,4 +1,3 @@
-# spec/requests/categories_spec.rb
 require 'rails_helper'
 
 RSpec.describe 'Categories API', type: :request do
@@ -6,7 +5,6 @@ RSpec.describe 'Categories API', type: :request do
   let!(:categories) {
     create_list(:category, 10)
   }
-  # create_list(:category, 10)
 
   let(:category_id) { categories.first.id }
 
