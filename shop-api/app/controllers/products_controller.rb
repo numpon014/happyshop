@@ -4,7 +4,9 @@ class ProductsController < ApplicationController
 
   # GET /categories/:category_id/products
   def index
-    json_response(@category.products)
+    products = @category.products.paginate(page: params[:page], per_page: 20)
+
+    json_response(products)
   end
 
   # GET /categories/:category_id/products/:id

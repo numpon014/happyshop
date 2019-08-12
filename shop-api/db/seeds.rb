@@ -11,5 +11,30 @@
 #   Category.create(name: 'Cleanser and Exfoliator', parent: category)
 # end
 
+require 'faker'
+
 Category.delete_all
-Category.create([{name: 'Masks and Treatments'}, { name: 'Cleanser and Exfoliator'}])
+Product.delete_all
+
+category_coffee = Category.create({name: 'Coffee'})
+30.times do
+  Product.create({
+    name: Faker::Coffee.blend_name,
+    price: Faker::Number.decimal(l_digits: 3, r_digits: 2),
+    sku: Faker::Invoice.reference,
+    stock: Faker::Number.between(from: 1, to: 1000),
+    category: category_coffee
+   })
+end
+
+category_beer = Category.create({name: 'Beer'})
+30.times do
+  Product.create({
+    name: Faker::Beer.brand,
+    price: Faker::Number.decimal(l_digits: 3, r_digits: 2),
+    sku: Faker::Invoice.reference,
+    stock: Faker::Number.between(from: 1, to: 1000),
+    category: category_beer
+   })
+end
+

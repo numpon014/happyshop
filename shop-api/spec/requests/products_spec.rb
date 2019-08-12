@@ -1,11 +1,13 @@
 require 'rails_helper'
+require 'byebug'
 
 RSpec.describe 'Products API' do
   # Initialize the test data
   let!(:category) { create(:category) }
-  let!(:products) { create_list(:product, 20, category_id: category.id) }
+  let!(:products) { create_list(:product, 40, category_id: category.id) }
   let(:category_id) { category.id }
   let(:id) { products.first.id }
+  let(:second_page_first_product_id) { products[20].id }
 
   # Test suite for GET /categories/:category_id/products
   describe 'GET /categories/:category_id/products' do
@@ -30,6 +32,24 @@ RSpec.describe 'Products API' do
 
       it 'returns a not found message' do
         expect(response.body).to match(/Couldn't find Category/)
+      end
+    end
+  end
+
+  describe 'GET /categories/:category_id/products?page=2' do
+    before { get "/categories/#{category_id}/products?page=2" }
+
+    context 'when category exists' do
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns category products amount' do
+        expect(json.size).to eq(20)
+      end
+
+      it 'returns category products amount' do
+        expect(json[0]['id']).to eq(second_page_first_product_id)
       end
     end
   end
