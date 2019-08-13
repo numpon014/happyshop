@@ -1,10 +1,11 @@
 class ProductsController < ApplicationController
   before_action :set_category
   before_action :set_product, only: [:show, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /categories/:category_id/products
   def index
-    products = @category.products.paginate(page: params[:page], per_page: 20)
+    products = @category.products.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 20)
 
     json_response_with_meta(products, pagination_meta(products))
   end
@@ -46,5 +47,13 @@ class ProductsController < ApplicationController
 
   def set_product
     @product = @category.products.find_by!(id: params[:id]) if @category
+  end
+
+  def sort_column
+    Product.column_names.include?(params[:sort]) ? params[:sort] : "name"
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
   end
 end
