@@ -16,7 +16,7 @@ class ProductsController < ApplicationController
 
   # POST /categories/:category_id/products
   def create
-    product =  @category.products.new(product_params.except(:file))
+    product = @category.products.new(product_params.except(:file))
     product.image = params[:file] # Assign a file like this, or
     product.save!
     json_response(product, :created)
@@ -25,7 +25,7 @@ class ProductsController < ApplicationController
   # PUT /categories/:category_id/products/:id
   def update
     @product.update(product_params)
-    head :no_content
+    json_response(@product)
   end
 
   # DELETE /categories/:category_id/products/:id
