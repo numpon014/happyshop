@@ -20,6 +20,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'carrierwave', '>= 2.0.0.rc', '< 3.0'
 gem "carrierwave-aws"
+gem 'has_scope'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'

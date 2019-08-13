@@ -3,9 +3,12 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :update, :destroy]
   helper_method :sort_column, :sort_direction
 
+  has_scope :by_price, using: %i[from to], type: :hash, only: :index
+  has_scope :sold_out, type: :boolean, only: :index
+
   # GET /categories/:category_id/products
   def index
-    products = @category.products.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 20)
+    products = apply_scopes(@category.products).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 20)
 
     json_response_with_meta(products, pagination_meta(products))
   end
