@@ -1,15 +1,18 @@
 import ApiService from './Service';
 
 const ProductService = {
-    // tslint:disable-next-line:max-line-length
-    async getAllProducts({page = 1, sort_column = 'name', sort_direction = 'asc'}: { page: number; sort_column: string, sort_direction: string }) {
-        const requestData = {
-            method: 'get',
-            url: `/categories/11/products?page=${page}&sort=${sort_column}&direction=${sort_direction}`,
-        };
-
+    async getAllProducts({ page = 1, sort = 'name', direction = 'asc', price_from = 0, price_to = 100000}
+    : { page: number; sort: string, direction: string, price_from: number, price_to: number }) {
         try {
-            const response = await ApiService.customRequest(requestData);
+            const response = await ApiService.get(`/categories/11/products`,{
+                page,
+                sort,
+                direction,
+                by_price: {
+                    from: price_from,
+                    to: price_to,
+                },
+            } );
             return response.data;
         } catch (error) {
             throw new Error(error.response);

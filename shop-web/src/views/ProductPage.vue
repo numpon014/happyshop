@@ -1,8 +1,11 @@
 <template>
     <div class="product-page">
+        <b-container>
+            <Header></Header>
+        </b-container>
         <b-container class="bv-example-row-flex-cols">
             <b-row class="sort-by mt-3">
-                <b-col md="3" offset-md="9" align-self="end">
+                <b-col md="3" offset-md="9">
                     <div class="float-left">
                         <span class="align-middle">Sort by</span>
                     </div>
@@ -14,6 +17,16 @@
                     </div>
                 </b-col>
             </b-row>
+            <b-row class="filter-price mt-3">
+                <b-col md="3" offset-md="9">
+                    <vue-slider ref="slider"
+                                v-model="filter.priceRange.value"
+                                :process="true"
+                                :min="filter.priceRange.min"
+                                :max="filter.priceRange.max"
+                                v-on:drag-end="onPriceFilterChanged"></vue-slider>
+                </b-col>
+            </b-row>
         </b-container>
         <b-container>
             <b-spinner label="Spinning" v-if='!isFetchProductsSuccess'></b-spinner>
@@ -21,7 +34,11 @@
                     v-if='isFetchProductsSuccess'
                     :products='products'
             ></ProductList>
+            <div v-if='pagination.totalItems === 0'>
+                No Product found!!
+            </div>
             <b-pagination size="md"
+                          v-if='pagination.totalItems > 0'
                           :total-rows="pagination.totalItems"
                           :per-page="pagination.perPage"
                           v-model="pagination.currentPage"
@@ -34,11 +51,12 @@
 <script>
   import ProductService from '../services/ProductService';
   import ProductList from '../components/product/ProductList';
+  import Header from '../components/Header';
 
   export default {
     name: 'Product',
     components: {
-      ProductList,
+      ProductList, Header
     },
     data() {
       return {
@@ -49,42 +67,57 @@
           perPage: 20,
           totalItems: 0,
         },
-       sorting: {
-         selected: 'name-asc',
-         options: [
-           { value: 'name-asc', text: 'Name A-Z' },
-           { value: 'name-desc', text: 'Name Z-A' },
-           { value: 'price-asc', text: 'Price: Low to High' },
-           { value: 'price-desc', text: 'Price: High to Low' },
-         ]
-       }
+        filter: {
+          priceRange: {
+            value: [0, 5000],
+            max: 5000,
+            min: 0,
+          }
+        },
+        sorting: {
+          selected: 'name-asc',
+          options: [
+            {value: 'name-asc', text: 'Name A-Z'},
+            {value: 'name-desc', text: 'Name Z-A'},
+            {value: 'price-asc', text: 'Price: Low to High'},
+            {value: 'price-desc', text: 'Price: High to Low'},
+          ]
+        }
       };
     },
     methods: {
       fetchProductList(page) {
-        ProductService.getAllProducts({ page }).then((response) => {
+        ProductService.getAllProducts({page}).then((response) => {
+          this.products = response.products;
+          this.pagination.totalItems = response.meta.total_count;
+          this.isFetchProductsSuccess = true;
+        });
+      },
+      onPriceFilterChanged() {
+        let value = this.$refs.slider.getValue();
+        ProductService.getAllProducts({price_from: value[0], price_to: value[1]}).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
           this.isFetchProductsSuccess = true;
         });
       },
       onSort(e) {
-        let sort_column = "name";
-        let sort_direction = "asc";
+        let sort = "name";
+        let direction = "asc";
         switch (e) {
           case "name-desc":
-            sort_direction = "asc";
+            direction = "asc";
             break;
           case "price-asc":
-            sort_column = "price";
-            sort_direction = "asc";
+            sort = "price";
+            direction = "asc";
             break;
           case "price-desc":
-            sort_column = "price";
-            sort_direction = "desc";
+            sort = "price";
+            direction = "desc";
             break;
         }
-        ProductService.getAllProducts({ sort_column, sort_direction }).then((response) => {
+        ProductService.getAllProducts({sort, direction}).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
           this.isFetchProductsSuccess = true;
@@ -92,10 +125,8 @@
       }
     },
     created() {
-      this.fetchProductList(1);
-    },
-    mounted() {
-    },
+      this.fetchProductList();
+    }
   };
 </script>
 

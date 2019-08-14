@@ -17,14 +17,15 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.27",
     "core-js": "^2.6.5",
+    "express": "4.15.3",
     "moment": "^2.24.0",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",
     "vue-router": "^3.0.3",
-    "vuejs-datepicker": "^1.6.2",
-    "express": "4.15.3"
+    "vue-slider-component": "^3.0.38",
+    "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.10.0",

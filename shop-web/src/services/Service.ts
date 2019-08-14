@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 
 const ApiService = {
 
@@ -6,8 +7,13 @@ const ApiService = {
     axios.defaults.baseURL = baseURL;
   },
 
-  get(resource: string) {
-    return axios.get(resource);
+  get(resource: string, params: object) {
+    return axios.get(resource, {
+      params,
+      paramsSerializer(params) {
+        return qs.stringify(params, { encode: false });
+      },
+    });
   },
 
   post(resource: string, data: any) {
