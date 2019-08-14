@@ -13,8 +13,8 @@
 
 require 'faker'
 
-Category.delete_all
 Product.delete_all
+Category.delete_all
 
 category_coffee = Category.create({name: 'Coffee'})
 30.times do
@@ -23,6 +23,7 @@ category_coffee = Category.create({name: 'Coffee'})
     price: Faker::Number.decimal(l_digits: 3, r_digits: 2),
     sku: Faker::Invoice.reference,
     stock: Faker::Number.between(from: 1, to: 1000),
+    description: Faker::Lorem.paragraph(sentence_count: 2, supplemental: false, random_sentences_to_add: 4),
     category: category_coffee
    })
 end
@@ -34,6 +35,7 @@ category_beer = Category.create({name: 'Beer'})
     price: Faker::Number.decimal(l_digits: 3, r_digits: 2),
     sku: Faker::Invoice.reference,
     stock: Faker::Number.between(from: 1, to: 1000),
+    description: Faker::Lorem.paragraphs,
     category: category_beer
    })
 end

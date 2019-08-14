@@ -20,8 +20,8 @@ class ProductsController < ApplicationController
 
   # POST /categories/:category_id/products
   def create
-    product = @category.products.new(product_params.except(:file))
-    product.image = params[:file] # Assign a file like this, or
+    product = @category.products.new(product_params)
+    # product.image = params[:file] # Assign a file like this, or
     product.save!
     json_response(product, :created)
   end
@@ -41,7 +41,7 @@ class ProductsController < ApplicationController
   private
 
   def product_params
-    params.permit(:name, :sku, :price, :stock, :file, :category_id)
+    params.permit(:name, :sku, :price, :stock, :image, :category_id)
   end
 
   def set_category

@@ -1,10 +1,10 @@
 import ApiService from './Service';
 
 const ProductService = {
-  async getAllProducts() {
+  async getAllProducts(page: number) {
     const requestData = {
       method: 'get',
-      url: `/categories/7/products?page=1&sort=price`,
+      url: `/categories/11/products?page=${page}&sort=price`,
     };
 
     try {
