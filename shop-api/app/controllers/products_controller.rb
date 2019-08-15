@@ -1,38 +1,36 @@
 class ProductsController < ApplicationController
-  before_action :set_category
   before_action :set_product, only: [:show, :update, :destroy]
   helper_method :sort_column, :sort_direction
 
   has_scope :by_price, using: %i[from to], type: :hash, only: :index
   has_scope :sold_out, type: :boolean, only: :index
 
-  # GET /categories/:category_id/products
+  # GET /products
   def index
-    products = apply_scopes(@category.products).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 20)
+    products = apply_scopes(Product).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 20)
 
     json_response_with_meta(products, pagination_meta(products))
   end
 
-  # GET /categories/:category_id/products/:id
+  # GET /products/:id
   def show
     json_response(@product)
   end
 
-  # POST /categories/:category_id/products
+  # POST /products
   def create
-    product = @category.products.new(product_params)
-    # product.image = params[:file] # Assign a file like this, or
+    product = Product.new(product_params)
     product.save!
     json_response(product, :created)
   end
 
-  # PUT /categories/:category_id/products/:id
+  # PUT /products/:id
   def update
     @product.update(product_params)
     json_response(@product)
   end
 
-  # DELETE /categories/:category_id/products/:id
+  # DELETE /products/:id
   def destroy
     @product.destroy
     head :no_content
@@ -44,12 +42,8 @@ class ProductsController < ApplicationController
     params.permit(:name, :sku, :price, :stock, :image, :category_id)
   end
 
-  def set_category
-    @category = Category.find(params[:category_id])
-  end
-
   def set_product
-    @product = @category.products.find_by!(id: params[:id]) if @category
+    @product = Product.find(params[:id])
   end
 
   def sort_column
