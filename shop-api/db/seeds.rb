@@ -17,6 +17,11 @@ Product.delete_all
 Category.delete_all
 
 category_coffee = Category.create({name: 'Coffee'})
+category_movie_fantasy = Category.create({name: 'Movie - Fantasy'})
+category_movie_action = Category.create({name: 'Movie - Action'})
+category_movie_sci_fi = Category.create({name: 'Movie - Sci Fi'})
+category_beer = Category.create({name: 'Beer'})
+
 30.times do
   Product.create({
     name: Faker::Coffee.blend_name,
@@ -24,11 +29,10 @@ category_coffee = Category.create({name: 'Coffee'})
     sku: Faker::Invoice.reference,
     stock: Faker::Number.between(from: 1, to: 1000),
     description: Faker::Lorem.paragraph(sentence_count: 2, supplemental: false, random_sentences_to_add: 4),
-    category: category_coffee
+    categories: [ category_coffee ]
    })
 end
 
-category_beer = Category.create({name: 'Beer'})
 30.times do
   Product.create({
     name: Faker::Beer.brand,
@@ -36,7 +40,28 @@ category_beer = Category.create({name: 'Beer'})
     sku: Faker::Invoice.reference,
     stock: Faker::Number.between(from: 1, to: 1000),
     description: Faker::Lorem.paragraphs,
-    category: category_beer
+    categories: [ category_beer ]
    })
 end
 
+15.times do
+  Product.create({
+     name: Faker::Movies::StarWars.character,
+     price: Faker::Number.decimal(l_digits: 4, r_digits: 2),
+     sku: Faker::Invoice.reference,
+     stock: Faker::Number.between(from: 1, to: 1000),
+     description: Faker::Lorem.paragraph(sentence_count: 2, supplemental: false, random_sentences_to_add: 4),
+     categories: [category_movie_sci_fi, category_movie_action]
+ })
+end
+
+15.times do
+  Product.create({
+       name: Faker::Movies::Hobbit.character ,
+       price: Faker::Number.decimal(l_digits: 4, r_digits: 2),
+       sku: Faker::Invoice.reference,
+       stock: Faker::Number.between(from: 1, to: 1000),
+       description: Faker::Lorem.paragraph(sentence_count: 2, supplemental: false, random_sentences_to_add: 4),
+       categories: [category_movie_fantasy, category_movie_action]
+   })
+end
