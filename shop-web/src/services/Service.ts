@@ -10,6 +10,7 @@ const ApiService = {
   get(resource: string, params: object) {
     return axios.get(resource, {
       params,
+      // tslint:disable-next-line:no-shadowed-variable
       paramsSerializer(params) {
         return qs.stringify(params, { encode: false });
       },

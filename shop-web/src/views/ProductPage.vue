@@ -56,7 +56,8 @@
   export default {
     name: 'Product',
     components: {
-      ProductList, Header
+      ProductList,
+      Header,
     },
     data() {
       return {
@@ -72,7 +73,7 @@
             value: [0, 5000],
             max: 5000,
             min: 0,
-          }
+          },
         },
         sorting: {
           selected: 'name-asc',
@@ -81,8 +82,8 @@
             {value: 'name-desc', text: 'Name Z-A'},
             {value: 'price-asc', text: 'Price: Low to High'},
             {value: 'price-desc', text: 'Price: High to Low'},
-          ]
-        }
+          ],
+        },
       };
     },
     methods: {
@@ -94,7 +95,7 @@
         });
       },
       onPriceFilterChanged() {
-        let value = this.$refs.slider.getValue();
+        const value = this.$refs.slider.getValue();
         ProductService.getAllProducts({price_from: value[0], price_to: value[1]}).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
@@ -102,19 +103,19 @@
         });
       },
       onSort(e) {
-        let sort = "name";
-        let direction = "asc";
+        let sort = 'name';
+        let direction = 'asc';
         switch (e) {
-          case "name-desc":
-            direction = "asc";
+          case 'name-desc':
+            direction = 'asc';
             break;
-          case "price-asc":
-            sort = "price";
-            direction = "asc";
+          case 'price-asc':
+            sort = 'price';
+            direction = 'asc';
             break;
-          case "price-desc":
-            sort = "price";
-            direction = "desc";
+          case 'price-desc':
+            sort = 'price';
+            direction = 'desc';
             break;
         }
         ProductService.getAllProducts({sort, direction}).then((response) => {
@@ -122,11 +123,11 @@
           this.pagination.totalItems = response.meta.total_count;
           this.isFetchProductsSuccess = true;
         });
-      }
+      },
     },
     created() {
       this.fetchProductList();
-    }
+    },
   };
 </script>
 
