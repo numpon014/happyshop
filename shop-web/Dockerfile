@@ -8,11 +8,11 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY /shop-web/package.json /usr/src/app/
+COPY shop-web/package.json /usr/src/app/
 RUN npm install
 
 # Bundle app source
-COPY /shop-web /usr/src/app
+COPY shop-web /usr/src/app
 
 # Build
 RUN npm run build
