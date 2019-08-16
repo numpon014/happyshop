@@ -3,12 +3,12 @@ FROM ruby:2.3.7
 ENV RAILS_ENV=production
 ENV RACK_ENV=production
 
-RUN mkdir /onyxserver
+RUN mkdir /happyshop
 WORKDIR /onyxserver
 
-COPY Gemfile /onyxserver/Gemfile
+COPY Gemfile /happyshop/Gemfile
 RUN bundle install
-COPY . /onyxserver
+COPY . /happyshop
 
 EXPOSE 3000
 
