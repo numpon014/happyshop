@@ -4,7 +4,7 @@ const ProductService = {
     async getAllProducts({ page = 1, sort = 'name', direction = 'asc', price_from = 0, price_to = 100000}
     : { page: number; sort: string, direction: string, price_from: number, price_to: number }) {
         try {
-            const response = await ApiService.get(`/categories/11/products`,{
+            const response = await ApiService.get(`/products`, {
                 page,
                 sort,
                 direction,
