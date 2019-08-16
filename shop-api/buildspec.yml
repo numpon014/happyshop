@@ -3,11 +3,11 @@ version: 0.2
 env:
   variables:
     AWS_ACCOUNT_ID: "312726873549"
-    IMAGE_NAME: "happyshopweb"
+    IMAGE_NAME: "happyshopapi"
     TASKDEF_TEMPLATE_FILE: "taskdef.json"
-    FAMILY: "happyshopweb"
+    FAMILY: "happyshopapi"
     CLUSTER: "happyshop-dev"
-    SERVICE_NAME: "happyshopweb"
+    SERVICE_NAME: "happyshopapi"
     DESIRED_COUNT: "1"
 
 phases:

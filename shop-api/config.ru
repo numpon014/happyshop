@@ -2,4 +2,7 @@
 
 require_relative 'config/environment'
 
-run Rails.application
+map ShopApi::Application.config.relative_url_root || "/" do
+  run Rails.application
+end
+
