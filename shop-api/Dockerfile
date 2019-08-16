@@ -4,7 +4,7 @@ ENV RAILS_ENV=production
 ENV RACK_ENV=production
 
 RUN mkdir /happyshop
-WORKDIR /onyxserver
+WORKDIR /happyshop
 
 COPY Gemfile /happyshop/Gemfile
 RUN bundle install
