@@ -46,4 +46,4 @@ phases:
       - aws ecs update-service --cluster $CLUSTER --region $AWS_DEFAULT_REGION --service $SERVICE_NAME --task-definition $FAMILY:$REVISION --desired-count $DESIRED_COUNT --force-new-deployment
       - echo Deploy completed on `date`
 artifacts:
-  files: $TASKDEF_FILE
+  files: shop-api/$TASKDEF_FILE
