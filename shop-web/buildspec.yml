@@ -6,7 +6,7 @@ env:
     IMAGE_NAME: "happyshopserver"
     TASKDEF_TEMPLATE_FILE: "taskdef.json"
     FAMILY: "happyshopserver"
-    CLUSTER: "happyshopserver-dev"
+    CLUSTER: "happyshop-dev"
     SERVICE_NAME: "happyshopserver"
     DESIRED_COUNT: "1"
 
