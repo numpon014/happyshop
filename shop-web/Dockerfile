@@ -12,7 +12,7 @@ COPY package.json /usr/src/app/
 RUN npm install
 
 # Bundle app source
-COPY shop-web /usr/src/app
+COPY . /usr/src/app
 
 # Build
 RUN npm run build
