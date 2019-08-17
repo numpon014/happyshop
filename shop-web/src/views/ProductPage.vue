@@ -17,6 +17,24 @@
                     </div>
                 </b-col>
             </b-row>
+            <b-row class="sort-by mt-3">
+                <b-col md="5" offset-md="7">
+                    <div class="float-left">
+                        <span class="align-middle">Category</span>
+                    </div>
+                    <div class="float-right">
+                        <multiselect v-model="filter.categories.value"
+                                     placeholder="Search or add a category"
+                                     label="name"
+                                     track-by="code"
+                                     :options="filter.categories.options"
+                                     :multiple="true"
+                                     :taggable="true"
+                                     @tag="addTag"></multiselect>
+                    </div>
+                </b-col>
+            </b-row>
+
             <b-row class="filter-price mt-3">
                 <b-col md="3" offset-md="9">
                     <vue-slider ref="slider"
@@ -74,6 +92,16 @@
             max: 5000,
             min: 0,
           },
+          categories: {
+            value: [
+              { name: 'Javascript', code: 'js' }
+            ],
+            options: [
+              { name: 'Vue.js', code: 'vu' },
+              { name: 'Javascript', code: 'js' },
+              { name: 'Open Source', code: 'os' }
+            ],
+          },
         },
         sorting: {
           selected: 'name-asc',
@@ -87,6 +115,14 @@
       };
     },
     methods: {
+      addTag(newTag) {
+        const tag = {
+          name: newTag,
+          code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000)),
+        };
+        this.options.push(tag);
+        this.value.push(tag);
+      },
       fetchProductList(page) {
         ProductService.getAllProducts({page}).then((response) => {
           this.products = response.products;

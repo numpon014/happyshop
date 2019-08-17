@@ -15,6 +15,7 @@
     import 'bootstrap/dist/css/bootstrap.css';
     import 'bootstrap-vue/dist/bootstrap-vue.css';
     import 'vue-slider-component/theme/default.css';
+    import 'vue-multiselect/dist/vue-multiselect.min.css';
 
     export default {
       name: 'App',
