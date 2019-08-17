@@ -6,37 +6,46 @@
         <b-container class="bv-example-row-flex-cols">
             <b-row class="sort-by mt-3">
                 <b-col md="3" offset-md="9">
-                    <div class="float-left">
-                        <span class="align-middle">Sort by</span>
-                    </div>
                     <div class="float-right">
+                        <div class="d-inline-block mr-3">
+                            <span class="align-middle">Sort by</span>
+                        </div>
+                        <div class="d-inline-block">
                         <b-form-select v-model="sorting.selected"
                                        v-on:change="onSort"
                                        :options="sorting.options"
                                        size="sm"></b-form-select>
+                        </div>
                     </div>
                 </b-col>
             </b-row>
             <b-row class="sort-by mt-3">
-                <b-col md="5" offset-md="7">
-                    <div class="float-left">
-                        <span class="align-middle">Category</span>
-                    </div>
+                <b-col md="7" offset-md="5">
                     <div class="float-right">
-                        <multiselect v-model="filter.categories.value"
-                                     placeholder="Search or add a category"
-                                     label="name"
-                                     track-by="code"
-                                     :options="filter.categories.options"
-                                     :multiple="true"
-                                     :taggable="true"
-                                     @tag="addTag"></multiselect>
+                        <div class="d-inline-block mr-3">
+                            <span class="align-middle">Category</span>
+                        </div>
+                        <div class="d-inline-block">
+                            <multiselect v-model="filter.categories.value"
+                                         placeholder="Search or add a category"
+                                         label="name"
+                                         track-by="id"
+                                         :limit="3"
+                                         :options="filter.categories.options"
+                                         :multiple="true"
+                                         :taggable="true"
+                                         :loading="isFetchCategoriesLoading"
+                                         @input="onCategoryFilterChanged"></multiselect>
+                        </div>
                     </div>
                 </b-col>
             </b-row>
 
             <b-row class="filter-price mt-3">
-                <b-col md="3" offset-md="9">
+                <b-col md="1" offset-md="8" class="text-right">
+                    <span class="align-top text-right">Price</span>
+                </b-col>
+                <b-col md="3">
                     <vue-slider ref="slider"
                                 v-model="filter.priceRange.value"
                                 :process="true"
@@ -68,7 +77,9 @@
 
 <script>
   import ProductService from '../services/ProductService';
+  import CategoryService from '../services/CategoryService';
   import ProductList from '../components/product/ProductList';
+  import _ from 'lodash';
   import Header from '../components/Header';
 
   export default {
@@ -80,6 +91,7 @@
     data() {
       return {
         isFetchProductsSuccess: false,
+        isFetchCategoriesLoading: true,
         products: [],
         pagination: {
           currentPage: 1,
@@ -93,14 +105,8 @@
             min: 0,
           },
           categories: {
-            value: [
-              { name: 'Javascript', code: 'js' }
-            ],
-            options: [
-              { name: 'Vue.js', code: 'vu' },
-              { name: 'Javascript', code: 'js' },
-              { name: 'Open Source', code: 'os' }
-            ],
+            value: [],
+            options: [],
           },
         },
         sorting: {
@@ -115,33 +121,24 @@
       };
     },
     methods: {
-      addTag(newTag) {
-        const tag = {
-          name: newTag,
-          code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000)),
-        };
-        this.options.push(tag);
-        this.value.push(tag);
-      },
-      fetchProductList(page) {
+      fetchProducts(page) {
         ProductService.getAllProducts({page}).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
           this.isFetchProductsSuccess = true;
         });
       },
-      onPriceFilterChanged() {
-        const value = this.$refs.slider.getValue();
-        ProductService.getAllProducts({price_from: value[0], price_to: value[1]}).then((response) => {
-          this.products = response.products;
-          this.pagination.totalItems = response.meta.total_count;
-          this.isFetchProductsSuccess = true;
+      fetchCategories() {
+        this.isFetchCategoriesLoading = true;
+        CategoryService.getAllCategory().then((response) => {
+          this.filter.categories.options = response.map((item) => { return { id : item.id, name : item.name } });
+          this.isFetchCategoriesLoading = false;
         });
       },
-      onSort(e) {
+      getFilterValue() {
         let sort = 'name';
         let direction = 'asc';
-        switch (e) {
+        switch (this.sorting.selected) {
           case 'name-desc':
             direction = 'asc';
             break;
@@ -154,15 +151,40 @@
             direction = 'desc';
             break;
         }
-        ProductService.getAllProducts({sort, direction}).then((response) => {
+        const priceRange = this.$refs.slider.getValue();
+        const category_ids = _.map(this.filter.categories.value, 'id');
+
+        return {
+          price_from: priceRange[0],
+          price_to: priceRange[1],
+          by_categories: category_ids,
+          sort,
+          direction
+        }
+      },
+      filterProducts() {
+        const params = this.getFilterValue();
+
+        this.isFetchProductsSuccess = false;
+        ProductService.getAllProducts(params).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
           this.isFetchProductsSuccess = true;
         });
       },
+      onPriceFilterChanged() {
+        this.filterProducts()
+      },
+      onCategoryFilterChanged() {
+        this.filterProducts();
+      },
+      onSort() {
+        this.filterProducts();
+      },
     },
     created() {
-      this.fetchProductList();
+      this.fetchProducts();
+      this.fetchCategories();
     },
   };
 </script>

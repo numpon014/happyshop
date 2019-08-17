@@ -12,7 +12,7 @@ const ApiService = {
       params,
       // tslint:disable-next-line:no-shadowed-variable
       paramsSerializer(params) {
-        return qs.stringify(params, { encode: false });
+        return qs.stringify(params, { encode: false, arrayFormat: 'brackets' });
       },
     });
   },
