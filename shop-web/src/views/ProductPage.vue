@@ -1,8 +1,6 @@
 <template>
     <div>
-        <b-container class="header-content">
-            <Header></Header>
-        </b-container>
+        <Header></Header>
         <b-container class="product-page page-content bv-example-row">
             <b-row class="justify-content-end">
                 <b-col cols="12" md="auto">
