@@ -5,9 +5,7 @@
 </template>
 
 <style lang="scss">
-#app {
-  font-size: 0.9em;
-}
+
 </style>
 
 <script>

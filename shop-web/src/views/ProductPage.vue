@@ -3,73 +3,67 @@
         <b-container>
             <Header></Header>
         </b-container>
-        <b-container class="bv-example-row-flex-cols">
-            <b-row class="sort-by mt-3">
-                <b-col md="3" offset-md="9">
-                    <div class="float-right">
-                        <div class="d-inline-block mr-3">
-                            <span class="align-middle">Sort by</span>
-                        </div>
-                        <div class="d-inline-block">
+        <b-container class="bv-example-row">
+            <b-row class="justify-content-end">
+                <b-col cols="12" md="auto">
+                    <b-form inline>
+                        <label class="mr-sm-2 mr-2" for="filter-by-category-input">Category</label>
+                        <multiselect v-model="filter.categories.value"
+                                     placeholder="Search or add a category"
+                                     label="name"
+                                     track-by="id"
+                                     :limit="2"
+                                     :options="filter.categories.options"
+                                     :multiple="true"
+                                     :loading="isFetchCategoriesLoading"
+                                     id="filter-by-category-input"
+                                     class="mb-2 mr-sm-2 mb-sm-0"
+                                     @input="onCategoryFilterChanged"></multiselect>
+                    </b-form>
+                </b-col>
+                <b-col col md="auto">
+                    <b-form inline class="p-sm-4 p-md-2" style="height: 40px">
+                        <label class="mr-sm-2 mr-2" for="filter-by-category-input">Price</label>
+                        <vue-slider ref="slider"
+                                    v-model="filter.priceRange.value"
+                                    :process="true"
+                                    :min="filter.priceRange.min"
+                                    :max="filter.priceRange.max"
+                                    style="width: 200px;"
+                                    class="mr-sm-2 ml-2"
+                                    v-on:drag-end="onPriceFilterChanged"></vue-slider>
+                    </b-form>
+                </b-col>
+                <b-col md="auto">
+                    <b-form inline>
+                        <label class="mr-sm-2" for="sort-by-input">Sort By</label>
                         <b-form-select v-model="sorting.selected"
                                        v-on:change="onSort"
                                        :options="sorting.options"
-                                       size="sm"></b-form-select>
-                        </div>
-                    </div>
-                </b-col>
-            </b-row>
-            <b-row class="sort-by mt-3">
-                <b-col md="7" offset-md="5">
-                    <div class="float-right">
-                        <div class="d-inline-block mr-3">
-                            <span class="align-middle">Category</span>
-                        </div>
-                        <div class="d-inline-block">
-                            <multiselect v-model="filter.categories.value"
-                                         placeholder="Search or add a category"
-                                         label="name"
-                                         track-by="id"
-                                         :limit="3"
-                                         :options="filter.categories.options"
-                                         :multiple="true"
-                                         :taggable="true"
-                                         :loading="isFetchCategoriesLoading"
-                                         @input="onCategoryFilterChanged"></multiselect>
-                        </div>
-                    </div>
-                </b-col>
-            </b-row>
-
-            <b-row class="filter-price mt-3">
-                <b-col md="1" offset-md="8" class="text-right">
-                    <span class="align-top text-right">Price</span>
-                </b-col>
-                <b-col md="3">
-                    <vue-slider ref="slider"
-                                v-model="filter.priceRange.value"
-                                :process="true"
-                                :min="filter.priceRange.min"
-                                :max="filter.priceRange.max"
-                                v-on:drag-end="onPriceFilterChanged"></vue-slider>
+                                       id="sort-by-input"></b-form-select>
+                    </b-form>
                 </b-col>
             </b-row>
         </b-container>
         <b-container>
-            <b-spinner label="Spinning" v-if='!isFetchProductsSuccess'></b-spinner>
-            <ProductList
-                    v-if='isFetchProductsSuccess'
-                    :products='products'
-            ></ProductList>
-            <div v-if='pagination.totalItems === 0'>
+            <b-row v-if='isFetchProductsLoading' class="justify-content-center">
+                <b-col md="auto" class="p-md-4">
+                    <b-spinner label="Spinning"></b-spinner>
+                </b-col>
+            </b-row>
+            <div v-if='pagination.totalItems === 0 && !isFetchProductsLoading'>
                 No Product found!!
             </div>
+            <ProductList
+                    v-if='!isFetchProductsLoading'
+                    :products='products'
+            ></ProductList>
             <b-pagination size="md"
                           v-if='pagination.totalItems > 0'
                           :total-rows="pagination.totalItems"
                           :per-page="pagination.perPage"
                           v-model="pagination.currentPage"
-                          @input="fetchProductList(pagination.currentPage)">
+                          @input="fetchProducts(pagination.currentPage)">
             </b-pagination>
         </b-container>
     </div>
@@ -90,7 +84,7 @@
     },
     data() {
       return {
-        isFetchProductsSuccess: false,
+        isFetchProductsLoading: true,
         isFetchCategoriesLoading: true,
         products: [],
         pagination: {
@@ -100,8 +94,8 @@
         },
         filter: {
           priceRange: {
-            value: [0, 5000],
-            max: 5000,
+            value: [0, 10000],
+            max: 10000,
             min: 0,
           },
           categories: {
@@ -122,10 +116,13 @@
     },
     methods: {
       fetchProducts(page) {
-        ProductService.getAllProducts({page}).then((response) => {
+        const filterParams = this.getFilterValue();
+        const params = _.merge({page}, filterParams);
+        // console.log(this.pagination.currentPage);
+        ProductService.getAllProducts(params).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
-          this.isFetchProductsSuccess = true;
+          this.isFetchProductsLoading = false;
         });
       },
       fetchCategories() {
@@ -151,7 +148,7 @@
             direction = 'desc';
             break;
         }
-        const priceRange = this.$refs.slider.getValue();
+        const priceRange = this.$refs.slider ? this.$refs.slider.getValue() : [];
         const category_ids = _.map(this.filter.categories.value, 'id');
 
         return {
@@ -165,11 +162,11 @@
       filterProducts() {
         const params = this.getFilterValue();
 
-        this.isFetchProductsSuccess = false;
+        this.isFetchProductsLoading = false;
         ProductService.getAllProducts(params).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;
-          this.isFetchProductsSuccess = true;
+          this.isFetchProductsLoading = false;
         });
       },
       onPriceFilterChanged() {
@@ -190,5 +187,7 @@
 </script>
 
 <style scoped>
-
+    .multiselect {
+        width: fit-content;
+    }
 </style>

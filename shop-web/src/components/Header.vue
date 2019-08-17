@@ -1,10 +1,9 @@
 <template>
   <div id="top-banner">
     <b-jumbotron bg-variant="info" text-variant="white">
-      <template slot="header">Happay Shoping</template>
+      <template slot="header">Happy Shoping</template>
       <template slot="lead">
-        This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-        featured content or information.
+        Welcome to our shop
       </template>
     </b-jumbotron>
   </div>
