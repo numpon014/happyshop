@@ -5,6 +5,7 @@ class Product < ApplicationRecord
 
   scope :by_price, -> (from, to) { where("price >= ? AND price <= ?", from.to_i, to.to_i) }
   scope :sold_out, -> { where(stock: 0) }
+  scope :by_categories, -> (category_ids) { includes(:categories).where('categories.id' => category_ids) }
 
   mount_uploader :image, ProductImageUploader
 

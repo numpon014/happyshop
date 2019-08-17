@@ -3,6 +3,7 @@ class ProductsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   has_scope :by_price, using: %i[from to], type: :hash, only: :index
+  has_scope :by_categories, type: :array, only: :index
   has_scope :sold_out, type: :boolean, only: :index
 
   # GET /products
