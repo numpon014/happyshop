@@ -5,7 +5,9 @@
 </template>
 
 <style lang="scss">
-
+  .page-content {
+    margin-top: 10px;
+  }
 </style>
 
 <script>

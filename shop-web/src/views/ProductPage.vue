@@ -1,9 +1,9 @@
 <template>
-    <div class="product-page">
-        <b-container>
+    <div>
+        <b-container class="header-content">
             <Header></Header>
         </b-container>
-        <b-container class="bv-example-row">
+        <b-container class="product-page page-content bv-example-row">
             <b-row class="justify-content-end">
                 <b-col cols="12" md="auto">
                     <b-form inline>
@@ -46,25 +46,31 @@
             </b-row>
         </b-container>
         <b-container>
-            <b-row v-if='isFetchProductsLoading' class="justify-content-center">
+            <b-row class="justify-content-center" v-if='isFetchProductsLoading' >
                 <b-col md="auto" class="p-md-4">
                     <b-spinner label="Spinning"></b-spinner>
                 </b-col>
             </b-row>
-            <div v-if='pagination.totalItems === 0 && !isFetchProductsLoading'>
-                No Product found!!
-            </div>
+            <b-row class="justify-content-center" v-if='pagination.totalItems === 0 && !isFetchProductsLoading'>
+                <b-col md="auto" class="p-md-4">
+                    No Product found!!
+                </b-col>
+            </b-row>
             <ProductList
                     v-if='!isFetchProductsLoading'
                     :products='products'
             ></ProductList>
-            <b-pagination size="md"
-                          v-if='pagination.totalItems > 0'
-                          :total-rows="pagination.totalItems"
-                          :per-page="pagination.perPage"
-                          v-model="pagination.currentPage"
-                          @input="fetchProducts(pagination.currentPage)">
-            </b-pagination>
+            <b-row class="justify-content-end mt-2">
+                <b-col md="auto">
+                    <b-pagination size="md"
+                                  v-if='pagination.totalItems > 0'
+                                  :total-rows="pagination.totalItems"
+                                  :per-page="pagination.perPage"
+                                  v-model="pagination.currentPage"
+                                  @input="fetchProducts(pagination.currentPage)">
+                    </b-pagination>
+                </b-col>
+            </b-row>
         </b-container>
     </div>
 </template>
@@ -118,7 +124,6 @@
       fetchProducts(page) {
         const filterParams = this.getFilterValue();
         const params = _.merge({page}, filterParams);
-        // console.log(this.pagination.currentPage);
         ProductService.getAllProducts(params).then((response) => {
           this.products = response.products;
           this.pagination.totalItems = response.meta.total_count;

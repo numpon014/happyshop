@@ -1,11 +1,8 @@
 <template>
-  <div id="top-banner">
-    <b-jumbotron bg-variant="info" text-variant="white">
-      <template slot="header">Happy Shoping</template>
-      <template slot="lead">
-        Welcome to our shop
-      </template>
-    </b-jumbotron>
+  <div class="top-nav">
+    <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar-brand href="#">HappyShop</b-navbar-brand>
+    </b-navbar>
   </div>
 </template>
 
@@ -15,12 +12,5 @@
 </script>
 
 <style scoped lang="scss">
-  /*#top-banner {*/
-  /*  background-color: black;*/
-  /*  height: 40px;*/
-  /*  padding: 10px;*/
-  /*  span {*/
-  /*    color: aliceblue;*/
-  /*  }*/
-  /*}*/
+
 </style>
